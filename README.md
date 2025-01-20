@@ -35,6 +35,7 @@ O diagrama de conexões está detalhado no arquivo `diagram.json`. As conexões 
 
 ## Código Fonte
 O código fonte do projeto está disponível no arquivo [`keypad_14_jan.c`](./keypad_14_jan.c). Ele configura os pinos do Raspberry Pi Pico, lê as teclas pressionadas e controla os LEDs e o buzzer conforme as entradas do teclado matricial.
+Vídeo - Apresentação [https://drive.google.com/file/d/12PscNWF8t_HIvUkmxGzE14TbbHgnS_Y0/view?usp=sharing]
 
 ## Como Executar
 1. Conecte todos os componentes seguindo o diagrama de conexões.
