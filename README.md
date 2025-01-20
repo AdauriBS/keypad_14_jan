@@ -35,15 +35,18 @@ O diagrama de conexões está detalhado no arquivo `diagram.json`. As conexões 
 
 ## Código Fonte
 O código fonte do projeto está disponível no arquivo [`keypad_14_jan.c`](./keypad_14_jan.c). Ele configura os pinos do Raspberry Pi Pico, lê as teclas pressionadas e controla os LEDs e o buzzer conforme as entradas do teclado matricial.
-Vídeo - Apresentação [https://drive.google.com/file/d/12PscNWF8t_HIvUkmxGzE14TbbHgnS_Y0/view?usp=sharing]
+
 
 ## Como Executar
 1. Conecte todos os componentes seguindo o diagrama de conexões.
 2. Compile o arquivo `keypad_14_jan.c` e faça o upload para o Raspberry Pi Pico.
 3. Alimente o Raspberry Pi Pico e teste as funcionalidades pressionando as teclas do teclado matricial.
 
-## Vídeo
+## Vídeo - Execução
 https://drive.google.com/file/d/16YoFY1BWDy9PEkTdgIPBYjgSiTu8xjoI/view?usp=sharing
+
+## Vídeo - Apresentação
+Vídeo - Apresentação [https://drive.google.com/file/d/12PscNWF8t_HIvUkmxGzE14TbbHgnS_Y0/view?usp=sharing]
 
 ## Licença
 Este projeto está licenciado sob a [MIT License](./LICENSE).
