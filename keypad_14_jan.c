@@ -64,6 +64,9 @@ char getKey() {
 
     for (int row = 0; row < ROWS; row++) {
       if (gpio_get(rowPins[row]) == 0) {
+        sleep_ms(20);
+        while(gpio_get(rowPins[row]) == 0);
+        gpio_put(colPins[col], 1);
         return keys[row][col]; 
       }
     }
@@ -74,7 +77,6 @@ char getKey() {
 }
 
 void tocar_buzzer(){
-
     pwm_set_gpio_level(buzzerPin, 50);              
     pwm_set_enabled(slice_num, true);                  
     sleep_ms(100);                                    
@@ -82,7 +84,7 @@ void tocar_buzzer(){
 }
 
 void controlLeds(char key) {
-  if (key == 'A') {
+if (key == 'A') {
     gpio_put(ledBLUEPin, 1); 
   } else {
     gpio_put(ledBLUEPin, 0); 
@@ -110,7 +112,7 @@ void controlLeds(char key) {
     if (key != 'B') gpio_put(ledGREENPin, 0);
     if (key != 'C') gpio_put(ledREDPin, 0);
   }
-}
+  }
 
 void controlBuzzer(char key) {
 
@@ -124,19 +126,7 @@ int main() {
   char lastKey = '\0';
 
   while (1) {
-    char key = '\0';
-
-    for (int col = 0; col < COLS; col++) {
-      gpio_put(colPins[col], 0);
-
-      for (int row = 0; row < ROWS; row++) {
-        if (gpio_get(rowPins[row]) == 0) {
-          key = keys[row][col];
-        }
-      }
-
-      gpio_put(colPins[col], 1);
-    }
+    char key = getKey();
 
     if (key != lastKey) {
       if (key != '\0') {
@@ -149,8 +139,7 @@ int main() {
 
     controlLeds(key);
     controlBuzzer(key);
-
-    busy_wait_us(100000); 
+    sleep_ms(300);
   }
   return 0;
 }
