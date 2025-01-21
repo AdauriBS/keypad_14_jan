@@ -24,6 +24,7 @@ uint buzzerPin = 21;
 void setup() {
   stdio_init_all();
 
+//Configura os Leds
   gpio_init(ledBLUEPin);
   gpio_set_dir(ledBLUEPin, GPIO_OUT);
   gpio_init(ledREDPin);
@@ -31,8 +32,13 @@ void setup() {
   gpio_init(ledGREENPin);
   gpio_set_dir(ledGREENPin, GPIO_OUT);
 
+//Configura o Buzzer
   gpio_init(buzzerPin);
   gpio_set_dir(buzzerPin, GPIO_OUT);
+  gpio_set_function(buzzerPin, GPIO_FUNC_PWM);      
+  uint slice_num = pwm_gpio_to_slice_num(buzzerPin); // Obter o slice do PWM
+  pwm_set_clkdiv(slice_num, 125.0);                  
+  pwm_set_wrap(slice_num, 255); 
 
   // Configurar os pinos das colunas como saída e setar HIGH
   for (int i = 0; i < COLS; i++) {
@@ -66,16 +72,10 @@ char getKey() {
 }
 
 void tocar_buzzer(){
-  gpio_set_function(buzzerPin, GPIO_FUNC_PWM);      
-    uint slice_num = pwm_gpio_to_slice_num(buzzerPin); // Obter o slice do PWM
 
-    pwm_set_clkdiv(slice_num, 125.0);                  
-    pwm_set_wrap(slice_num, 255);                      
     pwm_set_gpio_level(buzzerPin, 50);              
     pwm_set_enabled(slice_num, true);                  
-
     sleep_ms(100);                                    
-
     pwm_set_enabled(slice_num, false);                 
 }
 
