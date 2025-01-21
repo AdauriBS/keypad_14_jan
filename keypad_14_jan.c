@@ -5,6 +5,8 @@
 #define ROWS 4 
 #define COLS 4 
 
+uint slice_num;
+
 //Pinos das linhas e colunas 
 uint rowPins[ROWS] = {8, 7, 6, 5}; 
 uint colPins[COLS] = {4, 3, 2, 1}; 
@@ -36,7 +38,7 @@ void setup() {
   gpio_init(buzzerPin);
   gpio_set_dir(buzzerPin, GPIO_OUT);
   gpio_set_function(buzzerPin, GPIO_FUNC_PWM);      
-  uint slice_num = pwm_gpio_to_slice_num(buzzerPin); // Obter o slice do PWM
+  slice_num = pwm_gpio_to_slice_num(buzzerPin); // Obter o slice do PWM
   pwm_set_clkdiv(slice_num, 125.0);                  
   pwm_set_wrap(slice_num, 255); 
 
@@ -79,7 +81,7 @@ void tocar_buzzer(){
     pwm_set_enabled(slice_num, false);                 
 }
 
-void controlOutputs(char key) {
+void controlLeds(char key) {
   if (key == 'A') {
     gpio_put(ledBLUEPin, 1); 
   } else {
@@ -90,6 +92,7 @@ void controlOutputs(char key) {
     gpio_put(ledGREENPin, 1); 
   } else {
     gpio_put(ledGREENPin, 0); 
+  }
 
   if (key == 'C') {
     gpio_put(ledREDPin, 1); 
@@ -107,6 +110,9 @@ void controlOutputs(char key) {
     if (key != 'B') gpio_put(ledGREENPin, 0);
     if (key != 'C') gpio_put(ledREDPin, 0);
   }
+}
+
+void controlBuzzer(char key) {
 
   if (key == '#') {
     tocar_buzzer();
@@ -141,9 +147,10 @@ int main() {
       lastKey = key;
     }
 
-    controlOutputs(key);
+    controlLeds(key);
+    controlBuzzer(key);
 
     busy_wait_us(100000); 
-
+  }
   return 0;
 }
