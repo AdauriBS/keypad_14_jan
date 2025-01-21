@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include "hardware/pwm.h"
 
-#define ROWS 4 //linhas
-#define COLS 4 //colunas
+#define ROWS 4 
+#define COLS 4 
 
-uint rowPins[ROWS] = {8, 7, 6, 5}; // Pinos conectados às linhas do teclado
-uint colPins[COLS] = {4, 3, 2, 1}; // Pinos conectados às colunas do teclado
+//Pinos das linhas e colunas 
+uint rowPins[ROWS] = {8, 7, 6, 5}; 
+uint colPins[COLS] = {4, 3, 2, 1}; 
 
 char keys[ROWS][COLS] = {
   {'1', '2', '3', 'A'},
@@ -15,16 +16,14 @@ char keys[ROWS][COLS] = {
   {'*', '0', '#', 'D'}
 };
 
-uint ledBLUEPin = 28; // Pino conectado ao LED BLUE
-uint ledGREENPin = 27; // Pino conectado ao LED GREEN
-uint ledREDPin = 26; // Pino conectado ao LED RED
-uint buzzerPin = 21; // Pino conectado ao Buzzer
+uint ledBLUEPin = 28; 
+uint ledGREENPin = 27; 
+uint ledREDPin = 26; 
+uint buzzerPin = 21; 
 
-// Função de configuração inicial
 void setup() {
   stdio_init_all();
 
-  // Configurar os pinos dos LEDs como saída
   gpio_init(ledBLUEPin);
   gpio_set_dir(ledBLUEPin, GPIO_OUT);
   gpio_init(ledREDPin);
@@ -32,7 +31,6 @@ void setup() {
   gpio_init(ledGREENPin);
   gpio_set_dir(ledGREENPin, GPIO_OUT);
 
-  // Configurar o pino do Buzzer como saída
   gpio_init(buzzerPin);
   gpio_set_dir(buzzerPin, GPIO_OUT);
 
@@ -40,87 +38,76 @@ void setup() {
   for (int i = 0; i < COLS; i++) {
     gpio_init(colPins[i]);
     gpio_set_dir(colPins[i], GPIO_OUT);
-    gpio_put(colPins[i], 1); // Coluna iniciada com HIGH
+    gpio_put(colPins[i], 1); 
   }
 
   // Configurar os pinos das linhas como entrada com pull-up
   for (int i = 0; i < ROWS; i++) {
     gpio_init(rowPins[i]);
     gpio_set_dir(rowPins[i], GPIO_IN);
-    gpio_pull_up(rowPins[i]); // Configura pull-up nas linhas
+    gpio_pull_up(rowPins[i]); 
   }
 }
 
 // Função para ler a tecla pressionada
 char getKey() {
   for (int col = 0; col < COLS; col++) {
-    // Setar a coluna atual como LOW
     gpio_put(colPins[col], 0);
 
     for (int row = 0; row < ROWS; row++) {
-      // Verificar se a linha está em LOW (botão pressionado)
       if (gpio_get(rowPins[row]) == 0) {
-        return keys[row][col]; // Retorna a tecla pressionada
+        return keys[row][col]; 
       }
     }
-
-    // Setar a coluna atual como HIGH
     gpio_put(colPins[col], 1);
   }
 
-  return '\0'; // Nenhuma tecla pressionada
+  return '\0';
 }
 
-//Funcao para ativar o Buzzer por 2 segundos
 void tocar_buzzer(){
-  gpio_set_function(buzzerPin, GPIO_FUNC_PWM);      // Configura pino como saída PWM
+  gpio_set_function(buzzerPin, GPIO_FUNC_PWM);      
     uint slice_num = pwm_gpio_to_slice_num(buzzerPin); // Obter o slice do PWM
 
     pwm_set_clkdiv(slice_num, 125.0);                  
     pwm_set_wrap(slice_num, 255);                      
     pwm_set_gpio_level(buzzerPin, 50);              
-    pwm_set_enabled(slice_num, true);                  // Ativar o PWM
+    pwm_set_enabled(slice_num, true);                  
 
-    sleep_ms(100);                                    // Manter o som por 2 segundos
+    sleep_ms(100);                                    
 
-    pwm_set_enabled(slice_num, false);                 // Desativar o PWM  
+    pwm_set_enabled(slice_num, false);                 
 }
 
-// Função para controlar os LEDs e o buzzer
 void controlOutputs(char key) {
-  // Lógica para acender/apagar os LEDs com base na tecla pressionada
   if (key == 'A') {
-    gpio_put(ledBLUEPin, 1); // Acender o LED BLUE enquanto 'A' estiver pressionada
+    gpio_put(ledBLUEPin, 1); 
   } else {
-    gpio_put(ledBLUEPin, 0); // Apagar o LED
+    gpio_put(ledBLUEPin, 0); 
   }
 
   if (key == 'B') {
-    gpio_put(ledGREENPin, 1); // Acender o LED GREEN enquanto 'B' estiver pressionada
+    gpio_put(ledGREENPin, 1); 
   } else {
-    gpio_put(ledGREENPin, 0); // Apagar o LED
-  }
+    gpio_put(ledGREENPin, 0); 
 
   if (key == 'C') {
-    gpio_put(ledREDPin, 1); // Acender o LED RED enquanto 'C' estiver pressionada
+    gpio_put(ledREDPin, 1); 
   } else {
-    gpio_put(ledREDPin, 0); // Apagar o LED
+    gpio_put(ledREDPin, 0); 
   }
 
   if (key == 'D') {
-    // Acender os 3 LEDs enquanto 'D' estiver pressionada
     gpio_put(ledBLUEPin, 1);
     gpio_put(ledGREENPin, 1);
     gpio_put(ledREDPin, 1);
 
   } else {
-    // Apagar os 3 LEDs e o buzzer
     if (key != 'A') gpio_put(ledBLUEPin, 0);
     if (key != 'B') gpio_put(ledGREENPin, 0);
     if (key != 'C') gpio_put(ledREDPin, 0);
   }
 
-  // Emitir som curto e contínuo com o buzzer enquanto '#' estiver pressionado
   if (key == '#') {
     tocar_buzzer();
   }
@@ -154,11 +141,9 @@ int main() {
       lastKey = key;
     }
 
-    // Chama a função para controlar os LEDs e o buzzer
     controlOutputs(key);
 
-    busy_wait_us(100000); // Esperar 100 ms (100.000 microsegundos)
-  }
+    busy_wait_us(100000); 
 
   return 0;
 }
